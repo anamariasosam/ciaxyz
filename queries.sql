@@ -29,8 +29,9 @@ la profesión a "ama de casa" (consultada de la tabla de profesiones).
 */
 
 UPDATE personas
-SET profesion_id = (SELECT id FROM profesiones WHERE nombre = "Ama de casa")
-WHERE profesion_id IS NULL;
+SET profesion_id = (SELECT id FROM profesiones WHERE nombre = "ama de casa")
+WHERE profesion_id is NULL;
+
 
 /*
 Escriba la instruccion SQL para recuperar el Primer Nombre y Primer Apellido
@@ -39,7 +40,7 @@ de las personas que tienen la vocal "o" dentro del Primer Apellido o Segundo Ape
 
 SELECT primer_nombre, primer_apellido FROM personas
 WHERE primer_apellido LIKE "%o%" OR
-      segundo_apellido LIKE "%o%"
+      segundo_apellido LIKE "%o%";
 
 /*
 Escriba la instruccion SQL para recuperar el número total de personas
@@ -54,13 +55,13 @@ o las personas de sexo masculino 'M' que nacieron en "La Ceja".
 Listar primer_nombre, primer_apellido y nombre de la ciudad de nacimiento.
 */
 
-SELECT p.primer_nombre, p.primer_apellido, c.nombre
-FROM personas p, ciudades c
-WHERE ((nace_ciudad_id = (SELECT id FROM ciudades WHERE nombre = "El Retiro") AND
-	sexo = 'F') OR
-	(nace_ciudad_id = (SELECT id FROM ciudades WHERE nombre = "La Ceja") AND
-	sexo = 'M')) AND
-	p.nace_ciudad_id = c.id
+SELECT primer_nombre, primer_apellido, cn.nombre
+FROM personas p, ciudades cn
+WHERE p.vive_ciudad_id =cn.id
+AND( cn.nombre = "El Retiro"
+and p.sexo = "F" ) OR
+( cn.nombre = "La Ceja"
+and p.sexo = "M" )
 
 
 /*
@@ -69,13 +70,18 @@ nacieron en otra ciudad diferente a Medellín.
 Listar primer_nombre, primer_apellido y nombre de la ciudad de nacimiento.
 */
 
-SELECT p.primer_nombre, p.primer_apellido, c.nombre
-FROM personas p, ciudades c
-WHERE   p.nace_ciudad_id = c.id AND
-	p.nmestrato = 6 AND
-	vive_ciudad_id = (SELECT id FROM ciudades WHERE nombre = "Medellin") AND
-	nace_ciudad_id <> (SELECT id FROM ciudades WHERE nombre = "Medellin")
-
+SELECT primer_nombre, primer_apellido, cn.nombre
+FROM personas p, ciudad cn, ciudad cv
+WHERE
+p.nace_ciudad_id = cn.id
+AND
+p.vive_ciudad_id = cv.id
+AND
+p.nmestrato = 6
+AND
+cv.nombre = 'Medellin'
+AND
+cn.nombre <> 'Medellin'
 
 /*
 Escriba la instruccion SQL para listar las estadisticas de las sumatoria de número de personas y profesion por ciudad donde vive.
@@ -85,11 +91,14 @@ Medellin, Economista, 10
 Medellín, Ingeniero, 1
 */
 
-SELECT c.nombre, pr.nombre, COUNT(*) AS cantidad_de
-FROM personas p, ciudades c, profesiones pr
-WHERE   p.vive_ciudad_id = c.id AND
-	p.profesion_id = pr.id
-GROUP BY c.nombre
+SELECT cv.nombre, pro.nombre, count(*)
+FROM profesiones pro,
+( personas p
+LEFT JOIN ciudades cv
+WHERE cv.id = p.vive_ciudad_id )
+WHERE
+p.profesion_id = pro.id
+GROUP BY cv.nombre, pro.nombre;
 
 /*
 Escriba la instruccion SQL para listas el nombre de la ciudad
@@ -97,11 +106,8 @@ donde han nacido 3 o mas personas
 */
 
 
-SELECT c.nombre, COUNT(*) AS mucha_people
-FROM  personas p, ciudades c
+SELECT c.nombre, COUNT(*) AS mas_de_tres
+FROM personas p, ciudades c
 WHERE p.nace_ciudad_id = c.id
 GROUP BY p.nace_ciudad_id
-HAVING mucha_people >= 3
-
-
-	
+HAVING COUNT(*) >= 3;
