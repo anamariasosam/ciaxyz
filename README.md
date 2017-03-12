@@ -2,7 +2,7 @@
 
 Se desea desarrollar un sistema para el departamento de personal de la compañía XYZ.
 
-![model](https://github.com/anamariasosam/movies_SQL/blob/master/data_base_model.png)
+![model](https://github.com/anamariasosam/ciaxyz_SQL/blob/master/data_base_model.png)
 
 Este sistema debe registrar los empleados con: Nombre, Dirección, Teléfono, Salario, Cargo, Jefe, Ciudad de Nacimiento y Ciudad donde vive.
 
