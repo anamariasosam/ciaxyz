@@ -84,7 +84,8 @@ AND
 cn.nombre <> 'Medellin'
 
 /*
-Escriba la instruccion SQL para listar las estadisticas de las sumatoria de número de personas y profesion por ciudad donde vive.
+Escriba la instruccion SQL para listar las estadisticas de las sumatoria 
+de número de personas y profesion por ciudad donde vive.
 Nota: Recuerde incluir las personas que no tienen codigo de ciudad.
 Es decir debe listar cada ciudad, la profesion y el número. Ejemplo
 Medellin, Economista, 10
